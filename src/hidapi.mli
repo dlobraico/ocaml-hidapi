@@ -63,6 +63,18 @@ val set_nonblocking : t -> bool -> (unit, string) result
 
 val set_nonblocking_exn : t -> bool -> unit
 
+val send_feature_report : t -> ?len:int -> Bigstring.t -> (int, string) result
+(** [send_feature_report t buf len] sends a feature report to the device. The
+   first byte of [buf] should be set to the Report ID. Returns [Ok
+   nb_bytes_written] on success, or [Error description] in case of error. *)
+
+val get_feature_report : t -> Bigstring.t -> int -> (int, string) result
+(** [get_feature_report t buf len] reads a feature report from the device. The
+    first byte of [buf] must be set to the Report ID. On success, returns [Ok
+    nb_bytes_read] where [nb_bytes_read] is the number of bytes read plus one
+    for the report ID (which is still in the first byte). On failure, returns
+    [Error description]. *)
+
 val close : t -> unit
 (** [close t] closes the HID device [t]. *)
 

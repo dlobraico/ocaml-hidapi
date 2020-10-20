@@ -64,6 +64,10 @@ external hid_read_timeout :
   t -> Bigstring.t -> int -> int -> int = "stub_hid_read_timeout" [@@noalloc]
 external hid_set_nonblocking :
   t -> bool -> int = "stub_hid_set_nonblocking" [@@noalloc]
+external hid_send_feature_report :
+  t -> Bigstring.t -> int -> int = "stub_hid_send_feature_report" [@@noalloc]
+external hid_get_feature_report :
+  t -> Bigstring.t -> int -> int = "stub_hid_get_feature_report" [@@noalloc]
 external close :
   t -> unit = "stub_hid_close" [@@noalloc]
 
@@ -96,6 +100,24 @@ let read ?(timeout=(-1)) t buf len =
   | -1 -> Error (match hid_error t with None -> "" | Some msg -> msg)
   | nb_read -> Ok nb_read
 
+let send_feature_report t ?len buf =
+  let buflen = Bigstring.length buf in
+  let len =
+    match len with
+    | None -> buflen
+    | Some l when l < 0 ->
+      invalid_arg (Printf.sprintf "write: len = %d must be positive" l)
+    | Some l when l > buflen ->
+      invalid_arg (Printf.sprintf "write: len is too big (%d > %d)" l buflen)
+    | Some l -> l in
+  match hid_send_feature_report t buf len with
+  | -1 -> Error (match hid_error t with None -> "" | Some msg -> msg)
+  | nb_written -> Ok nb_written
+
+let get_feature_report t buf len =
+  match hid_get_feature_report t buf len with
+  | -1 -> Error (match hid_error t with None -> "" | Some msg -> msg)
+  | nb_read -> Ok nb_read
 (*---------------------------------------------------------------------------
    Copyright (c) 2017 Vincent Bernardoff
 

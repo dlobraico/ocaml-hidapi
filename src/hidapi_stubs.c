@@ -200,8 +200,16 @@ CAMLprim value stub_hid_write(value dev, value data, value len) {
     return Val_int(hid_write(Hid_val(dev), Caml_ba_data_val(data), Int_val(len)));
 }
 
+CAMLprim value stub_hid_send_feature_report(value dev, value data, value len) {
+  return Val_int(hid_send_feature_report(Hid_val(dev), Caml_ba_data_val(data), Int_val(len)));
+}
+
 CAMLprim value stub_hid_read_timeout(value dev, value data, value len, value ms) {
     return Val_int(hid_read_timeout(Hid_val(dev), Caml_ba_data_val(data), Int_val(len), Int_val(ms)));
+}
+
+CAMLprim value stub_hid_get_feature_report(value dev, value data, value len) {
+  return Val_int(hid_get_feature_report(Hid_val(dev), Caml_ba_data_val(data), Int_val(len)));
 }
 
 CAMLprim value stub_hid_set_nonblocking(value dev, value nonblock) {
